@@ -1,0 +1,10 @@
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\bin\x64\Debug\earthq2.dll
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\bin\x64\Debug\earthq2.pdb
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\bin\x64\Debug\earthq2.xml
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.vbproj.AssemblyReference.cache
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.Resources.resources
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.vbproj.GenerateResource.cache
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.vbproj.CoreCompileInputs.cache
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.dll
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.xml
+E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.pdb

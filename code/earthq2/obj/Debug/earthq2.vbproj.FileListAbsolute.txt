@@ -1,0 +1,18 @@
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.dll
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.pdb
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.xml
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.Resources.resources
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.vbproj.GenerateResource.Cache
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.dll
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.xml
+C:\Dropbox\Dropbox\.Common\Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.pdb
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.dll
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.pdb
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\bin\Debug\earthq2.xml
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.vbproj.AssemblyReference.cache
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.Resources.resources
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.vbproj.GenerateResource.cache
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.vbproj.CoreCompileInputs.cache
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.dll
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.xml
+E:\Nextcloud\Development\Archived Development\VB10\plugins\earthq2\earthq2\earthq2\obj\Debug\earthq2.pdb
