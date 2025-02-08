@@ -8,3 +8,13 @@ E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Deb
 E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.dll
 E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.xml
 E:\Nextcloud\Development\LCD Smartie Plugins\earthq2\earthq2\earthq2\obj\x64\Debug\earthq2.pdb
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\bin\x64\Debug\earthq2.dll
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\bin\x64\Debug\earthq2.pdb
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\bin\x64\Debug\earthq2.xml
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.vbproj.AssemblyReference.cache
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.Resources.resources
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.vbproj.GenerateResource.cache
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.vbproj.CoreCompileInputs.cache
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.dll
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.xml
+D:\Nextcloud\Development\VB14\06.LCD Smartie Plugins\01. Created and Updated from 2023 and later\earthq 2.x\code\earthq2\obj\x64\Debug\earthq2.pdb

@@ -1,237 +1,182 @@
 ﻿
+
 Imports System
-Imports System.Data.DataSet
 Imports System.IO
-Imports System.Web
-Imports System.Xml
 Imports System.Net
-Imports System.Xml.XPath
+Imports System.Xml
 Imports System.Text
+Imports System.Text.RegularExpressions
+Imports System.Runtime.InteropServices.WindowsRuntime
+Imports System.Diagnostics.Eventing.Reader
 
 Public Class LCDSmartie
-    'http://geofon.gfz-potsdam.de/eqinfo/list.php?latmin=&latmax=&lonmin=&lonmax=&magmin=&fmt=rss
+    Private rssUrl As String = "https://geofon.gfz.de/eqinfo/list.php?&fmt=rss"
+    Private lastUpdateTime As Long = 0
+    Private title As New List(Of String)()
+    Private description As New List(Of String)()
+    Private preVDescriptionDetails As String = ""
 
-    Dim rssUrl As String = "http://geofon.gfz-potsdam.de/eqinfo/list.php?latmin=&latmax=&lonmin=&lonmax=&magmin=&fmt=rss"
+    Private Function ShouldUpdate() As Boolean
+        Dim currentTime As Long = Environment.TickCount
+        If currentTime - lastUpdateTime >= 60000 OrElse lastUpdateTime = 0 Then
+            lastUpdateTime = currentTime
+            SaveSetting("earthq2", "Settings", "lastUpdateTime", lastUpdateTime)
+            Return True
+        End If
+        Return False
+    End Function
 
-    Dim completetitle As String
-    Dim completedescription As String
-    Dim title(20)
-    Dim description(20)
-    Dim lasttick = 0
-    Dim retrieving As Boolean = False
-    Dim checktime = 0
-    Dim timechanged = False
+    Private Sub UpdateRSS()
 
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
-    Private Sub RssGoTitle()
-        completetitle = "#"
         Try
-            ' set the file path member var
-            ' create a new xml doc
-            Dim doc As New XmlDocument()
-            Try
-                ' load the xml doc
-                doc.Load(rssUrl)
-               
-            Catch ex1 As Exception
-        
-                Return
-            End Try
-            ' get an xpath navigator   
-            Dim navigator As XPathNavigator = doc.CreateNavigator()
-            Try
-                ' look for the path to the rss item titles navigate
-                ' through the nodes to get all titles
-                Dim nodes As XPathNodeIterator = navigator.Select("/rss/channel/item/title")
-                While nodes.MoveNext
-                    ' clean up the text for display
-                    Dim node As XPathNavigator = nodes.Current
-                    Dim tmp As String = node.Value.Trim()
-                    tmp = tmp.Replace(ControlChars.CrLf, "")
-                    tmp = tmp.Replace(ControlChars.Lf, "")
-                    tmp = tmp.Replace(ControlChars.Cr, "")
-                    tmp = tmp.Replace(ControlChars.FormFeed, "")
-                    tmp = tmp.Replace(ControlChars.NewLine, "")
-                    'Label2.Text = ""
-                    '  Label2.Text += " * " & tmp
-                    completetitle += " * " & tmp
-                End While
-                ' set a position counter
-                Dim position As Integer = 0
-            Catch ex As Exception
-      
-            End Try
-   
-        Catch ex2 As Exception
-          
+            ' Force modern TLS support (important for HTTPS requests)
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
+
+            Dim request As WebRequest = WebRequest.Create(rssUrl)
+            Using response As WebResponse = request.GetResponse()
+                Using reader As New StreamReader(response.GetResponseStream())
+                    Dim xmlContent As String = reader.ReadToEnd()
+
+                    ' Save XML content to a file for debugging
+                    '     Dim debugFilePath As String = "C:\RSS_Debug.xml"
+                    '   File.WriteAllText(debugFilePath, xmlContent)
+
+                    ' Load into XML document
+                    Dim doc As New XmlDocument()
+                    doc.LoadXml(xmlContent)
+
+                    Dim titleNodes = doc.SelectNodes("/rss/channel/item/title")
+                    Dim descNodes = doc.SelectNodes("/rss/channel/item/description")
+
+                    title.Clear()
+                    description.Clear()
+
+                    For i As Integer = 0 To Math.Min(titleNodes.Count - 1, 20)
+                        title.Add(titleNodes(i).InnerText)
+                        description.Add(descNodes(i).InnerText)
+                    Next
+
+                End Using
+            End Using
+        Catch ex As Exception
+            ' Save error details to a file
+            Dim errorLogPath As String = "C:\RSS_Debug_Error.txt"
+            File.WriteAllText(errorLogPath, "Error: " & ex.Message & vbNewLine & ex.StackTrace)
+            '  Return "Error occurred!"
         End Try
 
-    End Sub
-
-    Private Sub RssGoDescription()
-        completedescription = "#"
-        Try
-            ' set the file path member var
-            ' create a new xml doc
-            Dim doc As New XmlDocument()
-            Try
-                ' load the xml doc
-                doc.Load(rssUrl)
-                ' return the cursor
-                '  Me.Cursor = Cursors.Default
-            Catch ex1 As Exception
-              
-                Return
-            End Try
-            ' get an xpath navigator   
-            Dim navigator As XPathNavigator = doc.CreateNavigator()
-            Try
-                ' look for the path to the rss item titles navigate
-                ' through the nodes to get all titles
-                Dim nodes As XPathNodeIterator = navigator.Select("/rss/channel/item/description")
-                While nodes.MoveNext
-                    ' clean up the text for display
-                    Dim node As XPathNavigator = nodes.Current
-                    Dim tmp As String = node.Value.Trim()
-                    tmp = tmp.Replace(ControlChars.CrLf, "")
-                    tmp = tmp.Replace(ControlChars.Lf, "")
-                    tmp = tmp.Replace(ControlChars.Cr, "")
-                    tmp = tmp.Replace(ControlChars.FormFeed, "")
-                    tmp = tmp.Replace(ControlChars.NewLine, "")
-                    'Label2.Text = ""
-                    '    Label2.Text += " * " & tmp
-                    completedescription += " * " & tmp
-                End While
-                ' set a position counter
-                Dim position As Integer = 0
-            Catch ex As Exception
-            
-            End Try
-     
-        Catch ex2 As Exception
-          
-        End Try
 
     End Sub
 
 
-    Public Declare Function GetTickCount Lib "kernel32" () As Long
+
+    Public Function ExtractDepth(desc As String) As String
+        Dim match As Match = Regex.Match(desc, "\d+\s+km")
+        If match.Success Then
+            Return match.Value
+        Else
+            Return "N/A"
+        End If
+    End Function
 
 
     Public Function function1(ByVal param1 As String, ByVal param2 As String) As String
-        On Error GoTo ErrH
 
         If param1 = "about" Or param2 = "about" Then
-            Return " function 1 returns earthquake info as provided by GEOFON site type 'help' for more info"
-
-        ElseIf param1 = "help" Or param2 = "help" Then
-            Return " check info text"
-
-        Else
-            ' If lasttick < GetTickCount + 10000 Then
-            ' retrieving = True
-            ' RssGoTitle()
-            ' RssGoDescription()
-            ' lasttick = GetTickCount
-            ' Else
-            ' retrieving = False
-            ' Return "refresh"
-            ' End If
-
-            Dim time As DateTime = DateTime.Now
-            Dim format As String = "ss"
-            If timechanged = False Then
-                timechanged = True
-                SaveSetting("earthq2", "settings", "timetocheck", time.ToString(format))
-                'completetitle = "-*-"
-                'completedescription = "-*-"
-                RssGoTitle()
-                RssGoDescription()
-            End If
-
-            If time.ToString(format) = GetSetting("earthq2", "settings", "timetocheck", 0) Then
-                ' completetitle = "-*-"
-                '  completedescription = "-*-"
-                RssGoTitle()
-                RssGoDescription()
-                'Return "-"
-            End If
-
-
-
-            title = Split(completetitle, "*")
-            '  Label3.Text = 
-            description = Split(completedescription, "*")
-
-            If LCase(param2) = "magnitude" Or LCase(param2) = "mag" Or LCase(param2) = "mg" Or LCase(param2) = "magni" Then
-                Dim out = Split(title(param1), ",")
-                out(0) = Trim(Replace(out(0), "M", ""))
-
-                Return out(0)
-            ElseIf LCase(param2) = "location" Or LCase(param2) = "loc" Or LCase(param2) = "lc" Or LCase(param2) = "locate" Then
-
-                Dim out = Split(title(param1), ",")
-                out(1) = Trim(out(1))
-
-                Return out(1)
-
-
-            ElseIf LCase(param2) = "depth" Or LCase(param2) = "dep" Or LCase(param2) = "dp" Then
-                Dim clearout = Replace(description(param1), "  ", " ")
-                clearout = Replace(clearout, "  ", " ")
-                Dim out2 = Split(clearout, " ")
-                out2(5) = Trim(out2(5))
-
-                Return out2(5)
-
-
-            ElseIf LCase(param2) = "origintime" Or LCase(param2) = "datetime" Or LCase(param2) = "time" Or LCase(param2) = "tm" Then
-                Dim clearout = Replace(description(param1), "  ", " ")
-                clearout = Replace(clearout, "  ", " ")
-                Dim out3 = Split(clearout, " ")
-                out3(1) = Trim(out3(1))
-
-                Return out3(1) & " " & out3(2)
-            Else
-
-                Return title(param1) & description(param1)
-
-
-            End If
+            Return "returns 1 on new event"
         End If
 
+        Try
+            If ShouldUpdate() Then
+                UpdateRSS()
+                '   Dim debugTestPath As String = "C:\RSS_Debug_Test.txt"
+                '     File.WriteAllText(debugTestPath, "Function1 was called!")
+            End If
 
+            'If param1 = "about" Then
+            '    Return "Earthquake RSS Data Retriever"
+            'End If
 
-        Exit Function
-ErrH:
+            Dim index As Integer = Integer.Parse(param1) - 1
+            If index < 0 OrElse index >= title.Count Then Return "Error: Index out of range"
 
-        Return ""
+            Select Case LCase(param2)
+                Case "magnitude", "mag", "mg", "magni"
+                    Dim out = title(index).Split(","c)
+                    Return Trim(Replace(out(0), "M", ""))
+                Case "location", "loc", "lc"
+                    Dim out = title(index).Split(","c)
+                    Return Trim(out(1))
+                Case "origintime", "time", "datetime", "tm"
+                    Dim descDetails = description(index).Split(" "c)
+                    Return descDetails(0) & " " & descDetails(1)
+
+                Case "depth", "dep", "dp"
+                    Dim depth As String = ExtractDepth(description(index))
+                    Return depth
+
+                Case Else
+                    Return "Error: Invalid parameter"
+            End Select
+        Catch ex As Exception
+            Return "Error: " & ex.Message
+        End Try
     End Function
 
 
-    
+
+    Public Function function2(ByVal param1 As String, ByVal param2 As String) As String
+
+        If param1 = "about" Or param2 = "about" Then
+            Return "accepted parameters are 'mg', 'lc', 'tm', 'dp' "
+        End If
+
+        Try
+            If ShouldUpdate() Then
+                UpdateRSS()
+                '   Dim debugTestPath As String = "C:\RSS_Debug_Test.txt"
+                '     File.WriteAllText(debugTestPath, "Function1 was called!")
+            End If
+
+            'If param1 = "about" Then
+            '    Return "Earthquake RSS Data Retriever"
+            'End If
+
+
+            Dim descDetails = description(0).Split(" "c)
+            If descDetails(0) & " " & descDetails(1) <> preVDescriptionDetails Then
+                preVDescriptionDetails = descDetails(0) & " " & descDetails(1)
+                Return 1
+            Else
+                Return 0
+
+            End If
+
+        Catch ex As Exception
+            Return "Error: " & ex.Message
+        End Try
+    End Function
+
 
     Public Function function19(ByVal param1 As String, ByVal param2 As String) As String
-        On Error GoTo errh
+        If param1 = "about" Or param2 = "about" Then
+            Return "accepted parameters are 'r' or nothing "
+        End If
 
-        Dim time As DateTime = DateTime.Now
-        Dim format As String = "ss"
-        If timechanged = False Then
-            timechanged = True
-            SaveSetting("earthq2", "settings", "timetocheck", time.ToString(format))
+
+        If param1 = "r" Or param1 = "rem" Then
+            Dim currentTime As Long = Environment.TickCount
+            Return "Remaining time: " & 60000 - (currentTime - lastUpdateTime)
+        Else
+            Return "Last update: " & lastUpdateTime
 
         End If
 
-        Return "Diagnostics: " & time.ToString(format) & " " & GetSetting("earthq2", "settings", "timetocheck", 0)
-
-        Exit Function
-errh:
-        Return ""
 
 
     End Function
-
-
 
     Public Function function20(ByVal param1 As String, ByVal param2 As String) As String
 
@@ -240,16 +185,17 @@ errh:
         ElseIf param1 = "plugin" Or param2 = "plugin" Then
             Return " earthquake 2"
         Else
-            Return " earthq2.dll version 1.1 by Limbo. A plugin for LCD Smartie" ' about
+            Return " earthq2.dll version 2.2 by Limbo. A plugin for LCD Smartie" ' about
 
         End If
 
     End Function
 
 
+
     Public Function SmartieInfo()
 
-        Return "Developer:Nikos Georgousis (Limbo)" & vbNewLine & "Version:1.1"
+        Return "Developer:Nikos Georgousis (Limbo)" & vbNewLine & "Version:2.2"
 
     End Function
 
@@ -261,7 +207,7 @@ errh:
         demolist.AppendLine("latest event $dll(earthq2,1,1,)")
         demolist.AppendLine(" ")
         demolist.AppendLine("Filters")
-        demolist.AppendLine("Event date/time $dll(earthq2, 1, 1, origintime)")
+        demolist.AppendLine("Event date/time $dll(earthq2,1,1,origintime)")
         demolist.AppendLine("Location $dll(earthq2,1,1,location)")
         demolist.AppendLine("Magnitude $dll(earthq2,1,1,magnitude)")
         demolist.AppendLine("Depth $dll(earthq2,1,1,depth)")
@@ -291,6 +237,9 @@ errh:
         'demolist.AppendLine("$dll(xtremp3,19,,)")
         'demolist.AppendLine("text output $dll(xtremp3,19,text,)")
         demolist.AppendLine(" ")
+        demolist.AppendLine(" ")
+        demolist.AppendLine("Updated on Feb 2025 during Santorini earthquakes")
+
         'demolist.AppendLine("_____________")
         demolist.AppendLine("----function 20----")
         demolist.AppendLine("> Credits <")
